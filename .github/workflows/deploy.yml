@@ -76,7 +76,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
 
           script: |
-            cd /opt/gtihubactions-learning
+            cd /opt/githubactions-learning
             docker compose pull
 
             docker compose up -d
