@@ -1,0 +1,84 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  # =========================
+  # CI
+  # =========================
+  build:
+    name: CI - Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+
+  # =========================
+  # Docker Build & Push
+  # =========================
+  docker:
+    name: Docker Build & Push
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD  }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/githubactions-learning:latest
+
+
+  # =========================
+  # CD - Deploy VPS
+  # =========================
+  deploy:
+    name: CD - Deploy to VPS
+    runs-on: ubuntu-latest
+
+    needs: docker
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+
+          script: |
+            cd /opt/gtihubactions-learning
+            docker compose pull
+
+            docker compose up -d
+
+            docker image prune -f
