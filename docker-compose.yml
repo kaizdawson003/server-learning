@@ -1,0 +1,10 @@
+services:
+  page:
+    image: phucitdev/githubactions-learning:latest
+
+    container_name: docker-ci-cd-learning
+
+    ports:
+      - "3000:80"
+
+    restart: unless-stopped
