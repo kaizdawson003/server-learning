@@ -1,4 +1,5 @@
 import { ShoppingCart, ArrowRight, Star, Plus } from "lucide-react";
+import Header from "./header";
 
 interface Burger {
   name: string;
@@ -47,6 +48,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-[#080808] text-white">
       {/* ================= NAVBAR ================= */}
+      <Header/>
       <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
           {/* Logo */}
