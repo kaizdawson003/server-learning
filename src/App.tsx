@@ -1,5 +1,6 @@
 import { ShoppingCart, ArrowRight, Star, Plus } from "lucide-react";
 import Header from "./header";
+import Footer from "./footer";
 
 interface Burger {
   name: string;
@@ -412,6 +413,7 @@ const App = () => {
           </div>
         </div>
       </footer>
+      <Footer/>
     </div>
   );
 };
